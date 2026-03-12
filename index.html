@@ -11,9 +11,9 @@
         audio { display: none; }
 
         /* --- [시스템 초기화 오버레이] --- */
-        #system-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.98); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease; }
-        #system-overlay.hidden { opacity: 0; pointer-events: none; }
-        .start-btn { padding: 20px 60px; font-size: 1.8rem; font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 50px; cursor: pointer; box-shadow: 0 0 40px rgba(220, 38, 38, 0.5); transition: 0.3s; letter-spacing: 2px; }
+        #system-overlay h1 { margin-bottom: 10px; letter-spacing: clamp(5px, 2vw, 15px); font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; color:white; }
+        #system-overlay p { color:#aaa; margin-bottom: 40px; letter-spacing: clamp(1px, 0.5vw, 3px); font-size: clamp(0.8rem, 1.5vw, 1.1rem); }
+        .start-btn { padding: clamp(10px, 2vh, 20px) clamp(30px, 4vw, 60px); font-size: clamp(1rem, 2vw, 1.8rem); font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 50px; cursor: pointer; box-shadow: 0 0 40px rgba(220, 38, 38, 0.5); transition: 0.3s; letter-spacing: 2px; }
         .start-btn:hover { transform: scale(1.05); background: white; color: #dc2626; }
 
         /* --- [배경 이미지 세팅] --- */
@@ -24,10 +24,10 @@
         /* --- [블랙아웃(정전) 미션 오버레이] --- */
         #blackout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; }
         .warning-box { text-align: center; animation: blinkRed 1s infinite; }
-        .warn-icon { font-size: 5rem; margin-bottom: 20px; display: block; }
-        .warn-title { font-size: 4rem; font-weight: 900; color: #dc2626; margin: 0; letter-spacing: 5px; }
-        .warn-sub { font-size: 1.5rem; color: #aaa; margin-top: 10px; margin-bottom: 40px; }
-        .btn-mission-start { padding: 20px 50px; font-size: 2rem; font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px #dc2626; transition: 0.3s; }
+        .warn-icon { font-size: clamp(3rem, 10vh, 5rem); margin-bottom: 20px; display: block; }
+        .warn-title { font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; color: #dc2626; margin: 0; letter-spacing: clamp(2px, 1vw, 5px); }
+        .warn-sub { font-size: clamp(1rem, 2vw, 1.5rem); color: #aaa; margin-top: 10px; margin-bottom: 40px; }
+        .btn-mission-start { padding: clamp(10px, 2vh, 20px) clamp(25px, 3vw, 50px); font-size: clamp(1rem, 2.5vw, 2rem); font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px #dc2626; transition: 0.3s; }
         .btn-mission-start:hover { transform: scale(1.1); background: white; color: #dc2626; }
         .btn-mission-cancel { margin-top: 20px; padding: 10px 30px; font-size: 1.2rem; font-weight: 700; background: transparent; color: #aaa; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; transition: 0.3s; display: none; }
         .btn-mission-cancel:hover { background: #333; color: white; border-color: white; }
@@ -35,16 +35,16 @@
         .shaking { animation: shake 0.1s infinite; }
 
         /* --- [헤더 & 오디오 제어] --- */
-        .header-bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-sizing: border-box; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .live-badge { background: #dc2626; color: white; padding: 5px 15px; font-weight: 900; font-size: 1rem; border-radius: 4px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); animation: pulse 2s infinite; }
+        .header-bar { position: absolute; top: 0; left: 0; width: 100%; height: clamp(50px, 8vh, 70px); display: flex; justify-content: space-between; align-items: center; padding: 0 clamp(20px, 5vw, 40px); box-sizing: border-box; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .live-badge { background: #dc2626; color: white; padding: 5px 15px; font-weight: 900; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 4px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); animation: pulse 2s infinite; }
         .live-dot { width: 10px; height: 10px; background: white; border-radius: 50%; }
-        .clock-display { font-size: 1.2rem; font-weight: 700; color: #ccc; font-variant-numeric: tabular-nums; }
-        .audio-ctrl-btn { width: 40px; height: 40px; border-radius: 50%; color: #fff; background: rgba(0,0,0,0.5); border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 0.9rem; }
+        .clock-display { font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 700; color: #ccc; font-variant-numeric: tabular-nums; }
+        .audio-ctrl-btn { width: clamp(30px, 5vh, 40px); height: clamp(30px, 5vh, 40px); border-radius: 50%; color: #fff; background: rgba(0,0,0,0.5); border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 0.9rem; }
         .audio-ctrl-btn:hover { border-color: #fff; background: rgba(255,255,255,0.2); }
 
         /* --- [메인 레이아웃 비율] --- */
         /* [수정] 하단 티커가 얇아졌으므로 bottom 여백을 80px에서 55px로 줄여 공간 확보 */
-        .layout-container { position: absolute; top: 70px; left: 40px; right: 40px; bottom: 55px; display: flex; gap: 40px; z-index: 10; }
+        .layout-container { position: absolute; top: clamp(60px, 10vh, 80px); left: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); bottom: clamp(40px, 7vh, 60px); display: flex; gap: clamp(20px, 3vw, 40px); z-index: 10; }
         .main-stream-area { flex: 2.5; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 
         #main-headline-box { flex: 2.0; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
@@ -54,8 +54,8 @@
         .hl-tag { display: inline-block; padding: 8px 25px; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; color: white; background: #000; margin-bottom: 15px; border-left: 6px solid white; align-self: flex-start; }
         
         /* [수정] 메인 뉴스 최소 폰트 크기 상향 (3rem -> 4rem) */
-        .hl-text { font-size: clamp(4rem, 5.5vw, 5.5rem); font-weight: 900; line-height: 1.15; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); word-break: keep-all; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-        .hl-sub { font-size: 1.2rem; color: rgba(255,255,255,0.7); margin-top: 15px; }
+        .hl-text { font-size: clamp(2rem, 5vw, 5.5rem); font-weight: 900; line-height: 1.15; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); word-break: keep-all; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .hl-sub { font-size: clamp(0.8rem, 1.2vw, 1.2rem); color: rgba(255,255,255,0.7); margin-top: 15px; }
 
         #sub-news-list { flex: 1.0; display: flex; flex-direction: column; gap: 6px; overflow: hidden; perspective: 1000px; }
         /* [수정] 폰트가 커지므로 위아래 padding을 살짝 줄여 공간 확보 (10px -> 8px) */
@@ -66,7 +66,7 @@
         .sub-cand { font-weight: 800; font-size: 1.1rem; margin-right: 20px; width: 140px; flex-shrink: 0; }
         
         /* [수정] 서브 뉴스 폰트 크기 대폭 확대 (1.8rem -> 2.3rem) */
-        .sub-head { font-size: 2.3rem; font-weight: 700; flex: 1; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word; line-height: 1.1; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
+        .sub-head { font-size: clamp(1.2rem, 2vw, 2.3rem); font-weight: 700; flex: 1; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word; line-height: 1.1; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
 
         /* --- [우측 사이드바: 아카이브] --- */
         .sidebar-area { flex: 1; background: rgba(10, 15, 30, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; backdrop-filter: blur(10px); min-width: 0; }
@@ -84,8 +84,8 @@
 
         /* --- [수정: 하단 실시간 점유율 (게이지 바 다이어트 & 파스텔톤)] --- */
         .ticker-wrap {
-            /* [수정] 높이 60px -> 35px 로 축소 */
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 35px;
+            /* [수정] 높이 60px -> 35px 로 축소 -> clamp로 유연화 */
+            position: fixed; bottom: 0; left: 0; width: 100%; height: clamp(30px, 4vh, 45px);
             background: #111; border-top: 1px solid #333;
             display: flex; align-items: center; z-index: 100;
         }
@@ -110,7 +110,7 @@
 
         /* --- [우측 하단 컨트롤 룸] --- */
         /* [수정] 컨트롤 룸 바닥 여백 조정 (80px -> 55px) */
-        .control-room { position: absolute; bottom: 55px; right: 40px; width: 320px; background: rgba(20, 20, 20, 0.95); padding: 20px; border-radius: 10px; border: 1px solid #444; z-index: 200; opacity: 0.2; transition: opacity 0.3s, transform 0.3s; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .control-room { position: absolute; bottom: clamp(45px, 6vh, 65px); right: 40px; width: clamp(250px, 20vw, 320px); background: rgba(20, 20, 20, 0.95); padding: clamp(10px, 2vh, 20px); border-radius: 10px; border: 1px solid #444; z-index: 200; opacity: 0.2; transition: opacity 0.3s, transform 0.3s; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
         .control-room:hover, .control-room:focus-within { opacity: 1; transform: translateY(-5px); }
         .cand-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
         .c-btn { background: #222; border: 1px solid #444; color: #888; height: 40px; cursor: pointer; border-radius: 4px; font-weight: 900; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
@@ -124,12 +124,12 @@
         
         /* --- [모달 아카이브 팝업] --- */
         #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 300; padding: 50px; box-sizing: border-box; overflow-y: auto; flex-direction: column; align-items: center; }
-        .modal-header { width: 90%; max-width: 1200px; margin-bottom: 30px; position: relative; }
-        .btn-close { position: absolute; top: 0; right: 0; background: none; border: 2px solid #555; color: #888; font-size: 1.5rem; padding: 5px 15px; cursor: pointer; }
-        .share-bar-container { width: 100%; height: 40px; background: #222; border-radius: 20px; overflow: hidden; display: flex; margin-bottom: 10px; }
-        .share-segment { height: 100%; transition: width 1s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; color: rgba(0,0,0,0.6); }
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 90%; max-width: 1200px; }
-        .news-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 10px; border-top: 5px solid gray; transition: transform 0.2s; }
+        .modal-header { width: 95%; max-width: 1200px; margin-bottom: 30px; position: relative; }
+        .btn-close { position: absolute; top: 0; right: 0; background: none; border: 2px solid #555; color: #888; font-size: clamp(1rem, 2vw, 1.5rem); padding: 5px 15px; cursor: pointer; }
+        .share-bar-container { width: 100%; height: clamp(30px, 5vh, 45px); background: #222; border-radius: 20px; overflow: hidden; display: flex; margin-bottom: 10px; }
+        .share-segment { height: 100%; transition: width 1s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: bold; color: rgba(0,0,0,0.6); }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(250px, 20vw, 300px), 1fr)); gap: clamp(15px, 2vw, 25px); width: 95%; max-width: 1200px; }
+        .news-card { background: #111; border: 1px solid #333; padding: clamp(15px, 2vw, 25px); border-radius: 10px; border-top: 5px solid gray; transition: transform 0.2s; }
         
         #flash-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 10000; transition: opacity 0.1s; }
 
@@ -143,8 +143,8 @@
 <body>
 
     <div id="system-overlay">
-        <h1 style="margin-bottom:10px; letter-spacing:15px; font-size: 4rem; font-weight: 900; color:white;">KINGMAKER</h1>
-        <p style="color:#aaa; margin-bottom:40px; letter-spacing:3px;">미디어 전략 제어 시스템</p>
+        <h1>KINGMAKER</h1>
+        <p>미디어 전략 제어 시스템</p>
         <button class="start-btn" onclick="activateSystem()">시스템 가동</button>
     </div>
 
