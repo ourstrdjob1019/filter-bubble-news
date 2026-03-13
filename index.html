@@ -3,570 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KINGMAKER: Real Newsroom (Pastel Gauge & Big Font)</title>
+    <title>KINGMAKER: Real Newsroom</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
-        body { margin: 0; background-color: #050505; color: white; font-family: 'Pretendard', sans-serif; overflow: hidden; height: 100vh; }
+        body { 
+            margin: 0; background-color: #050505; color: white; font-family: 'Pretendard', sans-serif; 
+            overflow: hidden; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* --- [PC 기본 환경] --- */
+        #main-wrapper { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #000; }
         audio { display: none; }
 
-        /* --- [시스템 초기화 오버레이] --- */
-        #system-overlay h1 { margin-bottom: 10px; letter-spacing: clamp(5px, 2vw, 15px); font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; color:white; }
-        #system-overlay p { color:#aaa; margin-bottom: 40px; letter-spacing: clamp(1px, 0.5vw, 3px); font-size: clamp(0.8rem, 1.5vw, 1.1rem); }
-        .start-btn { padding: clamp(10px, 2vh, 20px) clamp(30px, 4vw, 60px); font-size: clamp(1rem, 2vw, 1.8rem); font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 50px; cursor: pointer; box-shadow: 0 0 40px rgba(220, 38, 38, 0.5); transition: 0.3s; letter-spacing: 2px; }
+        #system-overlay h1 { margin-bottom: 1vmin; letter-spacing: 1.5vmin; font-size: 6vmin; font-weight: 900; color:white; }
+        #system-overlay p { color:#aaa; margin-bottom: 4vmin; letter-spacing: 0.3vmin; font-size: 1.8vmin; }
+        .start-btn { padding: 2vmin 6vmin; font-size: 2.5vmin; font-weight: 900; background: #dc2626; color: white; border: 0.3vmin solid white; border-radius: 5vmin; cursor: pointer; box-shadow: 0 0 4vmin rgba(220, 38, 38, 0.5); transition: 0.3s; letter-spacing: 0.2vmin; }
         .start-btn:hover { transform: scale(1.05); background: white; color: #dc2626; }
 
-        /* --- [배경 이미지 세팅] --- */
-        #studio-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A4%EB%8D%B0%EC%8A%A4%ED%81%AC.png'); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 0; }
+        #studio-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A4%EB%8D%B0%EC%8A%A4%ED%81%AC.png'); background-size: cover; background-position: center; z-index: 0; }
         #dim-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); z-index: 1; }
-        #grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; z-index: 2; }
+        #grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 5vmin 5vmin; z-index: 2; }
 
-        /* --- [블랙아웃(정전) 미션 오버레이] --- */
         #blackout-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; }
         .warning-box { text-align: center; animation: blinkRed 1s infinite; }
-        .warn-icon { font-size: clamp(3rem, 10vh, 5rem); margin-bottom: 20px; display: block; }
-        .warn-title { font-size: clamp(2rem, 8vw, 4rem); font-weight: 900; color: #dc2626; margin: 0; letter-spacing: clamp(2px, 1vw, 5px); }
-        .warn-sub { font-size: clamp(1rem, 2vw, 1.5rem); color: #aaa; margin-top: 10px; margin-bottom: 40px; }
-        .btn-mission-start { padding: clamp(10px, 2vh, 20px) clamp(25px, 3vw, 50px); font-size: clamp(1rem, 2.5vw, 2rem); font-weight: 900; background: #dc2626; color: white; border: 2px solid white; border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px #dc2626; transition: 0.3s; }
-        .btn-mission-start:hover { transform: scale(1.1); background: white; color: #dc2626; }
-        .btn-mission-cancel { margin-top: 20px; padding: 10px 30px; font-size: 1.2rem; font-weight: 700; background: transparent; color: #aaa; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; transition: 0.3s; display: none; }
-        .btn-mission-cancel:hover { background: #333; color: white; border-color: white; }
-        #mission-timer { display: none; font-size: 15rem; font-weight: 900; color: #dc2626; font-variant-numeric: tabular-nums; text-shadow: 0 0 50px #dc2626; }
-        .shaking { animation: shake 0.1s infinite; }
+        .warn-icon { font-size: 8vmin; margin-bottom: 2vmin; display: block; }
+        .warn-title { font-size: 7vmin; font-weight: 900; color: #dc2626; margin: 0; letter-spacing: 0.5vmin; }
+        .warn-sub { font-size: 2.2vmin; color: #aaa; margin-top: 1vmin; margin-bottom: 4vmin; }
+        .btn-mission-start { padding: 2vmin 5vmin; font-size: 3.5vmin; font-weight: 900; background: #dc2626; color: white; border: 0.3vmin solid white; border-radius: 1.5vmin; cursor: pointer; box-shadow: 0 0 3vmin #dc2626; transition: 0.3s; }
+        .btn-mission-cancel { margin-top: 2vmin; padding: 1.5vmin 3vmin; font-size: 1.8vmin; font-weight: 700; background: transparent; color: #aaa; border: 0.15vmin solid #aaa; border-radius: 0.8vmin; cursor: pointer; display: none; }
+        #mission-timer { display: none; font-size: 20vmin; font-weight: 900; color: #dc2626; font-variant-numeric: tabular-nums; text-shadow: 0 0 5vmin #dc2626; }
 
-        /* --- [헤더 & 오디오 제어] --- */
-        .header-bar { position: absolute; top: 0; left: 0; width: 100%; height: clamp(50px, 8vh, 70px); display: flex; justify-content: space-between; align-items: center; padding: 0 clamp(20px, 5vw, 40px); box-sizing: border-box; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .live-badge { background: #dc2626; color: white; padding: 5px 15px; font-weight: 900; font-size: clamp(0.8rem, 1.2vw, 1rem); border-radius: 4px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(220, 38, 38, 0.5); animation: pulse 2s infinite; }
-        .live-dot { width: 10px; height: 10px; background: white; border-radius: 50%; }
-        .clock-display { font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 700; color: #ccc; font-variant-numeric: tabular-nums; }
-        .audio-ctrl-btn { width: clamp(30px, 5vh, 40px); height: clamp(30px, 5vh, 40px); border-radius: 50%; color: #fff; background: rgba(0,0,0,0.5); border: 1px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 0.9rem; }
-        .audio-ctrl-btn:hover { border-color: #fff; background: rgba(255,255,255,0.2); }
+        .header-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8vmin; display: flex; justify-content: space-between; align-items: center; padding: 0 4vmin; box-sizing: border-box; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); z-index: 50; border-bottom: 0.15vmin solid rgba(255,255,255,0.1); }
+        .live-badge { background: #dc2626; color: white; padding: 0.5vmin 2vmin; font-weight: 900; font-size: 1.6vmin; border-radius: 0.6vmin; display: flex; align-items: center; gap: 1.2vmin; box-shadow: 0 0 2vmin rgba(220, 38, 38, 0.5); animation: pulse 2s infinite; }
+        .live-dot { width: 1.2vmin; height: 1.2vmin; background: white; border-radius: 50%; }
+        .clock-display { font-size: 2vmin; font-weight: 700; color: #ccc; }
+        .audio-ctrl-btn { width: 5vmin; height: 5vmin; border-radius: 50%; color: #fff; background: rgba(0,0,0,0.5); border: 0.15vmin solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8vmin; }
+        .header-title { font-weight: 900; font-size: 2.5vmin; letter-spacing: 0.2vmin; }
 
-        /* --- [메인 레이아웃 비율] --- */
-        /* [수정] 하단 티커가 얇아졌으므로 bottom 여백을 80px에서 55px로 줄여 공간 확보 */
-        .layout-container { position: absolute; top: clamp(60px, 10vh, 80px); left: clamp(20px, 4vw, 40px); right: clamp(20px, 4vw, 40px); bottom: clamp(40px, 7vh, 60px); display: flex; gap: clamp(20px, 3vw, 40px); z-index: 10; }
-        .main-stream-area { flex: 2.5; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+        .layout-container { position: absolute; top: 9vmin; left: 4vmin; right: 4vmin; bottom: 8vmin; display: flex; gap: 4vmin; z-index: 10; }
+        .main-stream-area { flex: 2.5; display: flex; flex-direction: column; gap: 1.5vmin; }
 
-        #main-headline-box { flex: 2.0; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        #main-headline-box:hover .btn-del { opacity: 1; } 
+        #main-headline-box { flex: 2.0; background: rgba(0,0,0,0.6); border: 0.15vmin solid rgba(255,255,255,0.2); border-radius: 2vmin; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 3vmin 8vmin rgba(0,0,0,0.5); }
         #headline-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; transition: background 0.5s; z-index: 0; }
-        .hl-content { position: relative; z-index: 2; padding: 35px; max-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; }
-        .hl-tag { display: inline-block; padding: 8px 25px; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; color: white; background: #000; margin-bottom: 15px; border-left: 6px solid white; align-self: flex-start; }
-        
-        /* [수정] 메인 뉴스 최소 폰트 크기 상향 (3rem -> 4rem) */
-        .hl-text { font-size: clamp(2rem, 5vw, 5.5rem); font-weight: 900; line-height: 1.15; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); word-break: keep-all; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-        .hl-sub { font-size: clamp(0.8rem, 1.2vw, 1.2rem); color: rgba(255,255,255,0.7); margin-top: 15px; }
+        .hl-content { position: relative; z-index: 2; padding: 5vmin; display: flex; flex-direction: column; justify-content: flex-end; }
+        .hl-tag { display: inline-block; padding: 1vmin 3.5vmin; font-size: 2.2vmin; font-weight: 900; color: white; background: #000; margin-bottom: 2vmin; border-left: 0.8vmin solid white; align-self: flex-start; }
+        .hl-text { font-size: 7.5vmin; font-weight: 900; line-height: 1.15; text-shadow: 0.3vmin 0.3vmin 2vmin rgba(0,0,0,0.9); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .hl-sub { font-size: 1.8vmin; color: rgba(255,255,255,0.7); margin-top: 2vmin; }
 
-        #sub-news-list { flex: 1.0; display: flex; flex-direction: column; gap: 6px; overflow: hidden; perspective: 1000px; }
-        /* [수정] 폰트가 커지므로 위아래 padding을 살짝 줄여 공간 확보 (10px -> 8px) */
-        .sub-item { position: relative; background: rgba(30, 30, 30, 0.7); border-left: 8px solid #555; padding: 8px 15px; display: flex; align-items: center; justify-content: space-between; border-radius: 6px; backdrop-filter: blur(5px); animation: slideInLeft 0.5s ease-out; transition: all 0.3s; transform-origin: left center; min-height: auto; }
-        .sub-item:hover { transform: translateX(15px) !important; background: rgba(50,50,50,0.95); opacity: 1 !important; z-index: 10; }
-        .sub-item:hover .btn-del { opacity: 1; }
-        
-        .sub-cand { font-weight: 800; font-size: 1.1rem; margin-right: 20px; width: 140px; flex-shrink: 0; }
-        
-        /* [수정] 서브 뉴스 폰트 크기 대폭 확대 (1.8rem -> 2.3rem) */
-        .sub-head { font-size: clamp(1.2rem, 2vw, 2.3rem); font-weight: 700; flex: 1; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word; line-height: 1.1; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
+        #sub-news-list { flex: 1.0; display: flex; flex-direction: column; gap: 1vmin; overflow: hidden; }
+        .sub-item { position: relative; background: rgba(30, 30, 30, 0.7); border-left: 1vmin solid #555; padding: 1.5vmin 2vmin; display: flex; align-items: center; justify-content: space-between; border-radius: 1vmin; backdrop-filter: blur(0.8vmin); }
+        .sub-cand { font-weight: 800; font-size: 1.8vmin; margin-right: 3vmin; width: 20vmin; flex-shrink: 0; }
+        .sub-head { font-size: 2.8vmin; font-weight: 700; flex: 1; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0.2vmin 0.2vmin 0.8vmin rgba(0,0,0,0.5); }
 
-        /* --- [우측 사이드바: 아카이브] --- */
-        .sidebar-area { flex: 1; background: rgba(10, 15, 30, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; backdrop-filter: blur(10px); min-width: 0; }
-        .sidebar-title { font-size: 1.4rem; font-weight: 900; color: #aaa; border-bottom: 2px solid #444; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; flex-shrink: 0; }
-        #archive-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; -ms-overflow-style: none; }
-        #archive-list::-webkit-scrollbar { display: none; }
-        .arc-item { position: relative; display: flex; align-items: center; font-size: 1.1rem; color: #ccc; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.08); animation: fadeIn 0.5s; transition: background 0.2s; }
-        .arc-item:hover { background: rgba(255,255,255,0.1); color: white; }
-        .arc-item:hover .btn-del { opacity: 1; }
-        .arc-cand { font-weight: bold; margin-right: 10px; white-space: nowrap; flex-shrink: 0; }
+        .sidebar-area { flex: 1; background: rgba(10, 15, 30, 0.5); border: 0.15vmin solid rgba(255,255,255,0.1); border-radius: 2vmin; padding: 3.5vmin; display: flex; flex-direction: column; backdrop-filter: blur(1.5vmin); }
+        .sidebar-title { font-size: 2.2vmin; font-weight: 900; color: #aaa; border-bottom: 0.3vmin solid #444; padding-bottom: 1.5vmin; margin-bottom: 2vmin; display: flex; justify-content: space-between; }
+        #archive-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.2vmin; }
+        .arc-item { position: relative; display: flex; align-items: center; font-size: 1.8vmin; color: #ccc; padding: 1.5vmin 1vmin; border-bottom: 0.15vmin solid rgba(255,255,255,0.08); }
+        .arc-cand { font-weight: bold; margin-right: 1.5vmin; white-space: nowrap; flex-shrink: 0; }
         .arc-txt { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+        .btn-del { position: absolute; top: 1.5vmin; right: 1.5vmin; width: 3vmin; height: 3vmin; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; color: #fff; font-weight: bold; font-size: 1.8vmin; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 100; }
+        .sub-item:hover .btn-del, .arc-item:hover .btn-del, #main-headline-box:hover .btn-del { opacity: 1; }
 
-        .btn-del { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; color: #fff; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s, background 0.2s; z-index: 100; }
-        .btn-del:hover { background: #ef4444; }
+        .ticker-wrap { position: absolute; bottom: 0; left: 0; width: 100%; height: 6vmin; background: #111; border-top: 0.15vmin solid #333; display: flex; align-items: center; z-index: 100; }
+        .ticker-label { background: #b91c1c; color: white; width: 20vmin; height: 100%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.5vmin; z-index: 101; letter-spacing: 0.15vmin; }
+        .ticker-content { flex: 1; height: 100%; display: flex; align-items: center; padding: 0; overflow: hidden; }
+        .gauge-segment { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 900; color: white; opacity: 0.7; transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
 
-        /* --- [수정: 하단 실시간 점유율 (게이지 바 다이어트 & 파스텔톤)] --- */
-        .ticker-wrap {
-            /* [수정] 높이 60px -> 35px 로 축소 -> clamp로 유연화 */
-            position: fixed; bottom: 0; left: 0; width: 100%; height: clamp(30px, 4vh, 45px);
-            background: #111; border-top: 1px solid #333;
-            display: flex; align-items: center; z-index: 100;
-        }
-        .ticker-label {
-            background: #b91c1c; color: white; width: 150px; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            /* [수정] 라벨 폰트 크기 축소 */
-            font-weight: 900; font-size: 0.9rem; z-index: 101; letter-spacing: 1px;
-        }
-        .ticker-content {
-            flex: 1; height: 100%; display: flex; align-items: center; padding: 0; overflow: hidden;
-        }
-        .gauge-segment {
-            height: 100%; display: flex; align-items: center; justify-content: center;
-            /* [수정] 내부 폰트 크기 축소 및 투명도를 통해 파스텔톤(옵션 C) 연출 */
-            font-size: 0.95rem; font-weight: 900; color: white;
-            opacity: 0.7; 
-            transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-sizing: border-box; overflow: hidden; white-space: nowrap;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-        }
+        .control-room { position: absolute; bottom: 8vmin; right: 4vmin; width: 25vmin; background: rgba(20, 20, 20, 0.95); padding: 2vmin; border-radius: 1vmin; border: 0.15vmin solid #444; z-index: 200; opacity: 0.2; transition: opacity 0.3s, transform 0.3s; box-shadow: 0 0 3vmin rgba(0,0,0,0.8); }
+        .control-room:hover, .control-room:focus-within { opacity: 1; transform: translateY(-0.5vmin); }
+        .cand-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5vmin; margin-bottom: 1vmin; }
+        .c-btn { background: #222; border: 0.15vmin solid #444; color: #888; height: 4vmin; cursor: pointer; border-radius: 0.4vmin; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 1.5vmin; }
+        .c-btn.active { color: white; border-color: currentColor; background: rgba(255,255,255,0.1); transform: scale(1.1); box-shadow: 0 0 1vmin currentColor; }
+        input[type="text"] { width: 100%; padding: 1vmin; background: #111; border: 0.15vmin solid #444; color: white; border-radius: 0.4vmin; box-sizing: border-box; margin-bottom: 1vmin; font-size: 1.5vmin; }
+        .btn-send { width: 100%; padding: 1vmin; background: #ccc; border: none; font-weight: bold; cursor: pointer; font-size: 1.5vmin; }
+        .btn-archive { position: absolute; top: 9vmin; left: 4vmin; z-index: 150; background: rgba(255, 255, 255, 0.1); border: 0.15vmin solid rgba(255, 255, 255, 0.3); color: white; padding: 1vmin 2vmin; cursor: pointer; font-weight: bold; border-radius: 2vmin; backdrop-filter: blur(0.5vmin); transition: 0.3s; font-size: 1.5vmin; }
 
-        /* --- [우측 하단 컨트롤 룸] --- */
-        /* [수정] 컨트롤 룸 바닥 여백 조정 (80px -> 55px) */
-        .control-room { position: absolute; bottom: clamp(45px, 6vh, 65px); right: 40px; width: clamp(250px, 20vw, 320px); background: rgba(20, 20, 20, 0.95); padding: clamp(10px, 2vh, 20px); border-radius: 10px; border: 1px solid #444; z-index: 200; opacity: 0.2; transition: opacity 0.3s, transform 0.3s; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-        .control-room:hover, .control-room:focus-within { opacity: 1; transform: translateY(-5px); }
-        .cand-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; }
-        .c-btn { background: #222; border: 1px solid #444; color: #888; height: 40px; cursor: pointer; border-radius: 4px; font-weight: 900; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .c-btn:hover { background: #333; }
-        .c-btn.active { color: white; border-color: currentColor; background: rgba(255,255,255,0.1); transform: scale(1.1); box-shadow: 0 0 10px currentColor; }
-        input[type="text"] { width: 100%; padding: 10px; background: #111; border: 1px solid #444; color: white; border-radius: 4px; box-sizing: border-box; margin-bottom: 10px; }
-        .btn-send { width: 100%; padding: 10px; background: #ccc; border: none; font-weight: bold; cursor: pointer; }
-
-        .btn-archive { position: absolute; top: 80px; left: 40px; z-index: 150; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 20px; backdrop-filter: blur(5px); transition: 0.3s; }
-        .btn-archive:hover { background: white; color: black; }
-        
-        /* --- [모달 아카이브 팝업] --- */
-        #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 300; padding: 50px; box-sizing: border-box; overflow-y: auto; flex-direction: column; align-items: center; }
-        .modal-header { width: 95%; max-width: 1200px; margin-bottom: 30px; position: relative; }
-        .btn-close { position: absolute; top: 0; right: 0; background: none; border: 2px solid #555; color: #888; font-size: clamp(1rem, 2vw, 1.5rem); padding: 5px 15px; cursor: pointer; }
-        .share-bar-container { width: 100%; height: clamp(30px, 5vh, 45px); background: #222; border-radius: 20px; overflow: hidden; display: flex; margin-bottom: 10px; }
-        .share-segment { height: 100%; transition: width 1s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: bold; color: rgba(0,0,0,0.6); }
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(250px, 20vw, 300px), 1fr)); gap: clamp(15px, 2vw, 25px); width: 95%; max-width: 1200px; }
-        .news-card { background: #111; border: 1px solid #333; padding: clamp(15px, 2vw, 25px); border-radius: 10px; border-top: 5px solid gray; transition: transform 0.2s; }
+        #archive-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 300; padding: 5vmin; box-sizing: border-box; overflow-y: auto; flex-direction: column; align-items: center; }
+        .modal-header { width: 95%; max-width: 120vmin; margin-bottom: 3vmin; position: relative; }
+        .btn-close { position: absolute; top: 0; right: 0; background: none; border: 0.2vmin solid #555; color: #888; font-size: 1.8vmin; padding: 0.5vmin 1.5vmin; cursor: pointer; }
+        .share-bar-container { width: 100%; height: 4vmin; background: #222; border-radius: 2vmin; overflow: hidden; display: flex; margin-bottom: 1vmin; }
+        .share-segment { height: 100%; transition: width 1s ease-in-out; display: flex; align-items: center; justify-content: center; font-size: 1.2vmin; font-weight: bold; color: rgba(0,0,0,0.6); }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(25vmin, 1fr)); gap: 2vmin; width: 95%; max-width: 120vmin; }
+        .news-card { background: #111; border: 0.15vmin solid #333; padding: 2vmin; border-radius: 1vmin; border-top: 0.5vmin solid gray; transition: transform 0.2s; }
         
         #flash-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 10000; transition: opacity 0.1s; }
-
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes blinkRed { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+
+        /* --- [모바일 전용 환경: 가로폭 1024px 이하 스케일링] --- */
+        @media (max-width: 1024px) {
+            #main-wrapper { position: absolute; top: 50%; left: 50%; width: 1920px !important; height: 1080px !important; max-width: none !important; max-height: none !important; margin-top: -540px; margin-left: -960px; transform-origin: center center; }
+            #system-overlay h1 { margin-bottom: 11px; letter-spacing: 16px; font-size: 65px; } #system-overlay p { margin-bottom: 43px; letter-spacing: 3px; font-size: 19px; }
+            .start-btn { padding: 22px 65px; font-size: 27px; border-width: 3px; border-radius: 54px; box-shadow: 0 0 43px rgba(220, 38, 38, 0.5); letter-spacing: 2px; }
+            #grid-overlay { background-size: 54px 54px; }
+            .warn-icon { font-size: 86px; margin-bottom: 22px; } .warn-title { font-size: 76px; letter-spacing: 5px; } .warn-sub { font-size: 24px; margin-top: 11px; margin-bottom: 43px; }
+            .btn-mission-start { padding: 22px 54px; font-size: 38px; border-width: 3px; border-radius: 16px; box-shadow: 0 0 32px #dc2626; } .btn-mission-cancel { margin-top: 22px; padding: 16px 32px; font-size: 19px; border-width: 2px; border-radius: 9px; }
+            #mission-timer { font-size: 216px; text-shadow: 0 0 54px #dc2626; }
+            .header-bar { height: 86px; padding: 0 43px; border-bottom-width: 2px; } .live-badge { padding: 5px 22px; font-size: 17px; border-radius: 6px; gap: 13px; box-shadow: 0 0 22px rgba(220, 38, 38, 0.5); } .live-dot { width: 13px; height: 13px; } .clock-display { font-size: 22px; } .audio-ctrl-btn { width: 54px; height: 54px; border-width: 2px; font-size: 19px; }
+            .header-title { font-size: 27px; letter-spacing: 2px; }
+            .layout-container { top: 97px; left: 43px; right: 43px; bottom: 86px; gap: 43px; } .main-stream-area { gap: 16px; }
+            #main-headline-box { border-width: 2px; border-radius: 22px; box-shadow: 0 32px 86px rgba(0,0,0,0.5); } .hl-content { padding: 54px; } .hl-tag { padding: 11px 38px; font-size: 24px; margin-bottom: 22px; border-left-width: 9px; } .hl-text { font-size: 81px; text-shadow: 3px 3px 22px rgba(0,0,0,0.9); } .hl-sub { font-size: 19px; margin-top: 22px; }
+            #sub-news-list { gap: 11px; } .sub-item { border-left-width: 11px; padding: 16px 22px; border-radius: 11px; backdrop-filter: blur(9px); } .sub-cand { font-size: 19px; margin-right: 32px; width: 216px; } .sub-head { font-size: 30px; text-shadow: 2px 2px 9px rgba(0,0,0,0.5); }
+            .sidebar-area { border-width: 2px; border-radius: 22px; padding: 38px; backdrop-filter: blur(16px); } .sidebar-title { font-size: 24px; border-bottom-width: 3px; padding-bottom: 16px; margin-bottom: 22px; } #archive-list { gap: 13px; } .arc-item { font-size: 19px; padding: 16px 11px; border-bottom-width: 2px; } .arc-cand { margin-right: 16px; } .btn-del { top: 16px; right: 16px; width: 32px; height: 32px; font-size: 19px; }
+            .ticker-wrap { height: 65px; border-top-width: 2px; } .ticker-label { width: 216px; font-size: 16px; letter-spacing: 2px; }
+            .control-room { bottom: 86px; right: 43px; width: 270px; padding: 22px; border-radius: 11px; border-width: 2px; transform: translateY(-5px); box-shadow: 0 0 32px rgba(0,0,0,0.8); } .cand-grid { gap: 5px; margin-bottom: 11px; } .c-btn { border-width: 2px; height: 43px; border-radius: 4px; font-size: 16px; } .c-btn.active { box-shadow: 0 0 11px currentColor; transform: scale(1.1); } input[type="text"] { padding: 11px; border-width: 2px; border-radius: 4px; margin-bottom: 11px; font-size: 16px; } .btn-send { padding: 11px; font-size: 16px; } .btn-archive { top: 97px; left: 43px; border-width: 2px; padding: 11px 22px; border-radius: 22px; backdrop-filter: blur(5px); font-size: 16px; }
+            #archive-modal { padding: 54px; } .modal-header { max-width: 1296px; margin-bottom: 32px; } .btn-close { border-width: 2px; font-size: 19px; padding: 5px 16px; } .share-bar-container { height: 43px; border-radius: 22px; margin-bottom: 11px; } .share-segment { font-size: 13px; } .news-grid { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 22px; max-width: 1296px; } .news-card { border-width: 2px; padding: 22px; border-radius: 11px; border-top-width: 5px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="system-overlay">
-        <h1>KINGMAKER</h1>
-        <p>미디어 전략 제어 시스템</p>
-        <button class="start-btn" onclick="activateSystem()">시스템 가동</button>
-    </div>
-
-    <audio id="audio1" src="https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A41.mp3" crossorigin="anonymous"></audio>
-    <audio id="audio2" src="https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A42.mp3" crossorigin="anonymous"></audio>
-    <audio id="timer-sfx" src="30초타이머.mp3"></audio>
-
-    <div id="studio-bg"></div>
-    <div id="dim-overlay"></div>
-    <div id="grid-overlay"></div>
-    <div id="flash-effect"></div>
-
-    <div id="blackout-overlay">
-        <div id="mission-warning" class="warning-box">
-            <span class="warn-icon">🚨</span>
-            <h1 class="warn-title">WARNING</h1>
-            <p class="warn-sub">POWER FAILURE DETECTED<br>선거본부 정전! 기자들만 이동 가능</p>
-            <button class="btn-mission-start" onclick="startMissionTimer()">MISSION START</button>
+    <div id="main-wrapper">
+        <div id="system-overlay" style="position: absolute; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <h1>KINGMAKER</h1>
+            <p>미디어 전략 제어 시스템</p>
+            <button class="start-btn" onclick="activateSystem()">시스템 가동</button>
         </div>
-        
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div id="mission-timer">30.00</div>
-            <button id="mission-cancel-btn" class="btn-mission-cancel" onclick="abortMission()">취소 (ESC)</button>
-        </div>
-    </div>
 
-    <div class="header-bar">
-        <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-        <div style="font-weight:900; font-size:1.5rem; letter-spacing:2px;">KINGMAKER NEWSROOM</div>
-        
-        <div style="display:flex; align-items:center; gap:20px;">
-            <div class="clock-display" id="clock">00:00:00</div>
-            <button class="audio-ctrl-btn" onclick="toggleAudio()" id="audio-btn" title="오디오 재생/정지">❚❚</button>
-        </div>
-    </div>
+        <audio id="audio1" src="https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A41.mp3" crossorigin="anonymous"></audio>
+        <audio id="audio2" src="https://ooo9luzdoplzs8wq.public.blob.vercel-storage.com/%ED%95%84%ED%84%B0%EB%B2%84%EB%B8%94/%EB%89%B4%EC%8A%A42.mp3" crossorigin="anonymous"></audio>
+        <audio id="timer-sfx" src="30초타이머.mp3"></audio>
 
-    <div class="layout-container">
-        <div class="main-stream-area">
-            <div id="main-headline-box">
-                <div id="headline-bg" style="background: linear-gradient(135deg, #000, #333);"></div>
-                <button class="btn-del" onclick="delNews(0)">X</button>
-                <div class="hl-content">
-                    <div class="hl-tag" id="hl-cand-tag">WAITING...</div>
-                    <div class="hl-text" id="hl-text">NEWSROOM SYSTEM ONLINE</div>
-                    <div class="hl-sub" id="hl-time">-</div>
+        <div id="studio-bg"></div><div id="dim-overlay"></div><div id="grid-overlay"></div><div id="flash-effect"></div>
+
+        <div id="blackout-overlay">
+            <div id="mission-warning" class="warning-box">
+                <span class="warn-icon">🚨</span><h1 class="warn-title">WARNING</h1><p class="warn-sub">POWER FAILURE DETECTED<br>선거본부 정전! 기자들만 이동 가능</p>
+                <button class="btn-mission-start" onclick="startMissionTimer()">MISSION START</button>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div id="mission-timer">30.00</div>
+                <button id="mission-cancel-btn" class="btn-mission-cancel" onclick="abortMission()">취소 (ESC)</button>
+            </div>
+        </div>
+
+        <div class="header-bar">
+            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+            <div class="header-title">KINGMAKER NEWSROOM</div>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="clock-display" id="clock">00:00:00</div>
+                <button class="audio-ctrl-btn" onclick="toggleAudio()" id="audio-btn" title="오디오 재생/정지">❚❚</button>
+            </div>
+        </div>
+
+        <div class="layout-container">
+            <div class="main-stream-area">
+                <div id="main-headline-box">
+                    <div id="headline-bg" style="background: linear-gradient(135deg, #000, #333);"></div>
+                    <button class="btn-del" onclick="delNews(0)">X</button>
+                    <div class="hl-content">
+                        <div class="hl-tag" id="hl-cand-tag">WAITING...</div>
+                        <div class="hl-text" id="hl-text">NEWSROOM SYSTEM ONLINE</div>
+                        <div class="hl-sub" id="hl-time">-</div>
+                    </div>
                 </div>
+                <div id="sub-news-list"></div>
             </div>
-            <div id="sub-news-list"></div>
-        </div>
 
-        <div class="sidebar-area">
-            <div class="sidebar-title">
-                <span>지나간 뉴스 모음</span>
-                <span>▼</span>
+            <div class="sidebar-area">
+                <div class="sidebar-title"><span>지나간 뉴스 모음</span><span>▼</span></div>
+                <div id="archive-list"></div>
             </div>
-            <div id="archive-list"></div>
         </div>
-    </div>
 
-    <div class="ticker-wrap">
-        <div class="ticker-label">언론 점유율</div>
-        <div class="ticker-content" id="share-gauge-container">
-            <div style="width:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:0.9rem;">Waiting for data...</div>
+        <div class="ticker-wrap">
+            <div class="ticker-label">언론 점유율</div>
+            <div class="ticker-content" id="share-gauge-container">
+                <div style="width:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:0.9rem;">Waiting for data...</div>
+            </div>
         </div>
-    </div>
 
-    <div class="control-room">
-        <div style="font-size:0.8rem; color:#888; font-weight:bold; margin-bottom:5px;">CANDIDATE</div>
-        <div class="cand-grid">
-            <button class="c-btn" onclick="setCand('후보자 A', '#3b82f6', this)" style="color:#3b82f6">A</button>
-            <button class="c-btn" onclick="setCand('후보자 B', '#eab308', this)" style="color:#eab308">B</button>
-            <button class="c-btn" onclick="setCand('후보자 C', '#f97316', this)" style="color:#f97316">C</button>
-            <button class="c-btn" onclick="setCand('후보자 D', '#dc2626', this)" style="color:#dc2626">D</button>
-            <button class="c-btn" onclick="setCand('후보자 E', '#10b981', this)" style="color:#10b981">E</button>
+        <div class="control-room">
+            <div style="font-size:0.8rem; color:#888; font-weight:bold; margin-bottom:5px;">CANDIDATE</div>
+            <div class="cand-grid">
+                <button class="c-btn" onclick="setCand('후보자 A', '#3b82f6', this)" style="color:#3b82f6">A</button>
+                <button class="c-btn" onclick="setCand('후보자 B', '#eab308', this)" style="color:#eab308">B</button>
+                <button class="c-btn" onclick="setCand('후보자 C', '#f97316', this)" style="color:#f97316">C</button>
+                <button class="c-btn" onclick="setCand('후보자 D', '#dc2626', this)" style="color:#dc2626">D</button>
+                <button class="c-btn" onclick="setCand('후보자 E', '#10b981', this)" style="color:#10b981">E</button>
+            </div>
+            <input type="text" id="in-headline" placeholder="헤드라인 입력 (Enter)" onkeypress="if(event.keyCode==13) pub()">
+            <button class="btn-send" onclick="pub()">송출 (BROADCAST)</button>
         </div>
-        <input type="text" id="in-headline" placeholder="헤드라인 입력 (Enter)" onkeypress="if(event.keyCode==13) pub()">
-        <button class="btn-send" onclick="pub()">송출 (BROADCAST)</button>
-    </div>
 
-    <button class="btn-archive" onclick="openArchive()">📊 MEDIA ANALYSIS</button>
+        <button class="btn-archive" onclick="openArchive()">📊 MEDIA ANALYSIS</button>
 
-    <div id="archive-modal">
-        <div class="modal-header">
-            <h2 style="margin:0;color:white;">MEDIA ARCHIVE</h2>
-            <button class="btn-close" onclick="closeArchive()">CLOSE X</button>
-            <div class="share-bar-container" id="share-bar"></div>
+        <div id="archive-modal">
+            <div class="modal-header">
+                <h2 style="margin:0;color:white;">MEDIA ARCHIVE</h2>
+                <button class="btn-close" onclick="closeArchive()">CLOSE X</button>
+                <div class="share-bar-container" id="share-bar"></div>
+            </div>
+            <div class="news-grid" id="archive-grid"></div>
         </div>
-        <div class="news-grid" id="archive-grid"></div>
-    </div>
+    </div> <script>
+        // --- [PC/모바일 하이브리드 스케일링 로직] ---
+        function resizeApp() {
+            const wrapper = document.getElementById('main-wrapper');
+            if (window.innerWidth <= 1024) {
+                const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+                wrapper.style.transform = `scale(${scale})`;
+            } else {
+                wrapper.style.transform = 'none';
+            }
+        }
+        window.addEventListener('resize', resizeApp); resizeApp();
 
-    <script>
         const audio1 = document.getElementById('audio1');
         const audio2 = document.getElementById('audio2');
-        let systemActive = false;
-        let currentAudio = audio1;
-        let isAudioPaused = false;
-
-        audio1.onended = function() { 
-            currentAudio = audio2; 
-            if(!isAudioPaused) audio2.play().catch(e=>{}); 
-        };
-        audio2.loop = true;
+        let systemActive = false; let currentAudio = audio1; let isAudioPaused = false;
+        audio1.onended = function() { currentAudio = audio2; if(!isAudioPaused) audio2.play().catch(e=>{}); }; audio2.loop = true;
 
         function activateSystem() {
             if (systemActive) return;
-            document.getElementById('system-overlay').classList.add('hidden');
-            systemActive = true;
-            audio1.play().catch(e=>{console.log("Audio Play Error:", e);});
+            document.getElementById('system-overlay').style.display = 'none';
+            systemActive = true; audio1.play().catch(e=>{});
         }
-
         function toggleAudio() {
-            if(!systemActive) return;
-            isAudioPaused = !isAudioPaused;
+            if(!systemActive) return; isAudioPaused = !isAudioPaused;
             const btn = document.getElementById('audio-btn');
-            
-            if (isAudioPaused) {
-                currentAudio.pause();
-                btn.innerText = "▶";
-                btn.style.color = "#dc2626";
-            } else {
-                currentAudio.play();
-                btn.innerText = "❚❚";
-                btn.style.color = "#fff";
-            }
+            if (isAudioPaused) { currentAudio.pause(); btn.innerText = "▶"; btn.style.color = "#dc2626"; } 
+            else { currentAudio.play(); btn.innerText = "❚❚"; btn.style.color = "#fff"; }
         }
 
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
-        }, 1000);
+        setInterval(() => { const now = new Date(); document.getElementById('clock').innerText = now.toLocaleTimeString(); }, 1000);
 
-        let newsLog = []; 
-        let curCand = "후보자 A"; 
-        let curColor = "#3b82f6"; 
-        const firstBtn = document.querySelector('.c-btn');
-        if(firstBtn) setCand('후보자 A', '#3b82f6', firstBtn);
+        let newsLog = []; let curCand = "후보자 A"; let curColor = "#3b82f6"; 
+        const firstBtn = document.querySelector('.c-btn'); if(firstBtn) setCand('후보자 A', '#3b82f6', firstBtn);
+        function setCand(name, color, btn) { curCand = name; curColor = color; document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
 
-        function setCand(name, color, btn) {
-            curCand = name; curColor = color;
-            document.querySelectorAll('.c-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        let missionInterval = null;
-        let isMissionRunning = false;
-
+        let missionInterval = null; let isMissionRunning = false;
         document.addEventListener('keydown', (e) => {
             if (!systemActive) return; 
-
-            if (e.altKey && e.key === '1' && !isMissionRunning) {
-                e.preventDefault();
-                document.getElementById('blackout-overlay').style.display = 'flex';
-                document.getElementById('mission-warning').style.display = 'block';
-                document.getElementById('mission-timer').style.display = 'none';
-                document.getElementById('mission-cancel-btn').style.display = 'none'; 
-            }
-
-            if (e.key === 'Escape' && isMissionRunning) {
-                abortMission();
-            }
+            if (e.altKey && e.key === '1' && !isMissionRunning) { e.preventDefault(); document.getElementById('blackout-overlay').style.display = 'flex'; document.getElementById('mission-warning').style.display = 'block'; document.getElementById('mission-timer').style.display = 'none'; document.getElementById('mission-cancel-btn').style.display = 'none'; }
+            if (e.key === 'Escape' && isMissionRunning) { abortMission(); }
         });
 
         function startMissionTimer() {
-            isMissionRunning = true;
-            document.getElementById('mission-warning').style.display = 'none';
-            
-            const timerEl = document.getElementById('mission-timer');
-            const cancelBtn = document.getElementById('mission-cancel-btn');
-            timerEl.style.display = 'block';
-            cancelBtn.style.display = 'block'; 
-            
-            timerEl.innerText = "30.00"; 
-            
-            const timerSfx = document.getElementById('timer-sfx');
-            timerSfx.currentTime = 0;
-            timerSfx.play().catch(e=>console.log(e));
-
+            isMissionRunning = true; document.getElementById('mission-warning').style.display = 'none';
+            const timerEl = document.getElementById('mission-timer'), cancelBtn = document.getElementById('mission-cancel-btn');
+            timerEl.style.display = 'block'; cancelBtn.style.display = 'block'; timerEl.innerText = "30.00"; 
+            const timerSfx = document.getElementById('timer-sfx'); timerSfx.currentTime = 0; timerSfx.play().catch(e=>{});
             let timeLeft = 30.00; 
             missionInterval = setInterval(() => {
                 timeLeft -= 0.05; 
-                if(timeLeft <= 0) {
-                    timeLeft = 0;
-                    clearInterval(missionInterval);
-                    timerEl.innerText = "00.00";
-                    endMission(); 
-                } else {
-                    timerEl.innerText = timeLeft.toFixed(2);
-                    if(timeLeft < 5) timerEl.classList.add('shaking'); 
-                }
+                if(timeLeft <= 0) { timeLeft = 0; clearInterval(missionInterval); timerEl.innerText = "00.00"; endMission(); } 
+                else { timerEl.innerText = timeLeft.toFixed(2); if(timeLeft < 5) timerEl.classList.add('shaking'); }
             }, 50);
         }
 
-        function abortMission() {
-            if(missionInterval) clearInterval(missionInterval);
-            isMissionRunning = false;
-            
-            document.getElementById('blackout-overlay').style.display = 'none';
-            
-            const timerSfx = document.getElementById('timer-sfx');
-            timerSfx.pause();
-            timerSfx.currentTime = 0;
-
-            document.getElementById('mission-timer').classList.remove('shaking');
-        }
-
+        function abortMission() { if(missionInterval) clearInterval(missionInterval); isMissionRunning = false; document.getElementById('blackout-overlay').style.display = 'none'; const timerSfx = document.getElementById('timer-sfx'); timerSfx.pause(); timerSfx.currentTime = 0; document.getElementById('mission-timer').classList.remove('shaking'); }
         function endMission() {
-            isMissionRunning = false;
-            document.getElementById('blackout-overlay').style.display = 'none';
-            
-            const flash = document.getElementById('flash-effect');
-            flash.style.transition = 'none'; flash.style.opacity = 1;
-            setTimeout(() => { flash.style.transition = 'opacity 1s'; flash.style.opacity = 0; }, 100);
-            
+            isMissionRunning = false; document.getElementById('blackout-overlay').style.display = 'none';
+            const flash = document.getElementById('flash-effect'); flash.style.transition = 'none'; flash.style.opacity = 1; setTimeout(() => { flash.style.transition = 'opacity 1s'; flash.style.opacity = 0; }, 100);
             document.getElementById('timer-sfx').pause();
-
-            const bombNews = [
-                { head: "진정한 후보자는 누가 될 것인가...!", cand: "정부", color: "#888" },
-                { head: "가짜 뉴스 기승 주의, 가짜뉴스 처벌은 솜방망이?", cand: "정부", color: "#888" },
-                { head: "정전 틈타 약탈·범죄 기승... 치안 공백 우려", cand: "정부", color: "#ef4444" },
-                { head: `정전은 ${curCand} 탓... 책임론 부상`, cand: "정부", color: curColor }, 
-                { head: "시민들 분노 폭발... 거리로 뛰쳐나와 '이게 나라냐'", cand: "정부", color: "#ef4444" },
-                { head: "정전 이후 정보 해킹 사례 급증, 가짜 뉴스 조회수 급증", cand: "정부", color: "#dc2626" }
-            ];
-
-            bombNews.forEach(item => {
-                newsLog.unshift({
-                    cand: item.cand, head: item.head, color: item.color, time: new Date().toLocaleTimeString(), isSystem: true
-                });
-            });
-            renderAll();
+            const bombNews = [ { head: "진정한 후보자는 누가 될 것인가...!", cand: "정부", color: "#888" }, { head: "가짜 뉴스 기승 주의, 가짜뉴스 처벌은 솜방망이?", cand: "정부", color: "#888" }, { head: "정전 틈타 약탈·범죄 기승... 치안 공백 우려", cand: "정부", color: "#ef4444" }, { head: `정전은 ${curCand} 탓... 책임론 부상`, cand: "정부", color: curColor }, { head: "시민들 분노 폭발... 거리로 뛰쳐나와 '이게 나라냐'", cand: "정부", color: "#ef4444" }, { head: "정전 이후 정보 해킹 사례 급증, 가짜 뉴스 조회수 급증", cand: "정부", color: "#dc2626" } ];
+            bombNews.forEach(item => { newsLog.unshift({ cand: item.cand, head: item.head, color: item.color, time: new Date().toLocaleTimeString(), isSystem: true }); }); renderAll();
         }
 
-        function pub() {
-            const input = document.getElementById('in-headline');
-            const txt = input.value.trim();
-            if(!txt) return;
-            const item = { cand: curCand, head: txt, color: curColor, time: new Date().toLocaleTimeString() };
-            newsLog.unshift(item); 
-            renderAll();
-            input.value = '';
-        }
-
-        function delNews(index) {
-            if(!confirm("이 뉴스를 삭제하시겠습니까?")) return;
-            newsLog.splice(index, 1);
-            renderAll();
-        }
-
+        function pub() { const input = document.getElementById('in-headline'); const txt = input.value.trim(); if(!txt) return; newsLog.unshift({ cand: curCand, head: txt, color: curColor, time: new Date().toLocaleTimeString() }); renderAll(); input.value = ''; }
+        function delNews(index) { if(!confirm("이 뉴스를 삭제하시겠습니까?")) return; newsLog.splice(index, 1); renderAll(); }
         function renderAll() {
             const mainBox = document.getElementById('main-headline-box');
-            if(newsLog.length > 0) {
-                const main = newsLog[0];
-                const bg = document.getElementById('headline-bg');
-                const tag = document.getElementById('hl-cand-tag');
-                const txt = document.getElementById('hl-text');
-                const time = document.getElementById('hl-time');
-
-                bg.style.background = `linear-gradient(135deg, ${main.color} 0%, #000 100%)`;
-                bg.style.opacity = 0.6;
-                tag.innerText = main.cand; tag.style.color = main.color;
-                txt.innerText = main.head; time.innerText = "UPDATED: " + main.time;
-                mainBox.querySelector('.btn-del').style.display = 'flex';
-            } else {
-                document.getElementById('headline-bg').style.background = 'transparent';
-                document.getElementById('hl-cand-tag').innerText = "WAITING...";
-                document.getElementById('hl-text').innerText = "NEWSROOM SYSTEM ONLINE";
-                document.getElementById('hl-time').innerText = "-";
-                mainBox.querySelector('.btn-del').style.display = 'none';
-            }
-
-            const subContainer = document.getElementById('sub-news-list');
-            subContainer.innerHTML = '';
-            const subItems = newsLog.slice(1, 6); 
-            
-            subItems.forEach((item, idx) => {
-                const realIndex = idx + 1;
-                const div = document.createElement('div');
-                div.className = 'sub-item';
-                div.style.borderLeftColor = item.color;
-                
-                const scale = 1 - (idx * 0.05); 
-                const opacity = 1 - (idx * 0.1); 
-                div.style.transform = `scale(${scale})`;
-                div.style.opacity = opacity;
-
-                div.innerHTML = `
-                    <span class="sub-cand" style="color:${item.color}">${item.cand}</span>
-                    <span class="sub-head">${item.head}</span>
-                    <button class="btn-del" onclick="delNews(${realIndex})">X</button>
-                `;
-                subContainer.appendChild(div);
-            });
-
-            const arcContainer = document.getElementById('archive-list');
-            arcContainer.innerHTML = '';
-            const arcItems = newsLog.slice(6, 17);
-
-            arcItems.forEach((item, idx) => {
-                const realIndex = idx + 6;
-                const div = document.createElement('div');
-                div.className = 'arc-item';
-                div.title = item.head; 
-                div.innerHTML = `
-                    <span class="arc-cand" style="color:${item.color}">[${item.cand}]</span>
-                    <span class="arc-txt">${item.head}</span>
-                    <button class="btn-del" onclick="delNews(${realIndex})">X</button>
-                `;
-                arcContainer.appendChild(div);
-            });
-
-            const gaugeContainer = document.getElementById('share-gauge-container');
-            const validNews = newsLog.filter(n => !n.isSystem);
-            
-            if(validNews.length > 0) {
-                let stats = {};
-                validNews.forEach(n => {
-                    if(!stats[n.cand]) stats[n.cand] = { count: 0, color: n.color };
-                    stats[n.cand].count++;
-                });
-
-                gaugeContainer.innerHTML = ''; 
-                
-                for(let cand in stats) {
-                    let s = stats[cand];
-                    let p = (s.count / validNews.length) * 100; 
-                    
-                    let seg = document.createElement('div');
-                    seg.className = 'gauge-segment';
-                    seg.style.width = p + '%';
-                    seg.style.backgroundColor = s.color;
-                    
-                    let shortName = cand.replace('후보자 ', ''); 
-                    
-                    if(p > 5) {
-                        seg.innerHTML = `<span style="margin-right:8px; font-weight:900;">${shortName}</span> <span style="font-size:0.9em;">${Math.round(p)}%</span>`;
-                    }
-                    gaugeContainer.appendChild(seg);
-                }
-            } else {
-                gaugeContainer.innerHTML = '<div style="width:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:0.9rem;">Waiting for data...</div>';
-            }
+            if(newsLog.length > 0) { const main = newsLog[0]; const bg = document.getElementById('headline-bg'); const tag = document.getElementById('hl-cand-tag'); const txt = document.getElementById('hl-text'); const time = document.getElementById('hl-time'); bg.style.background = `linear-gradient(135deg, ${main.color} 0%, #000 100%)`; bg.style.opacity = 0.6; tag.innerText = main.cand; tag.style.color = main.color; txt.innerText = main.head; time.innerText = "UPDATED: " + main.time; mainBox.querySelector('.btn-del').style.display = 'flex'; } 
+            else { document.getElementById('headline-bg').style.background = 'transparent'; document.getElementById('hl-cand-tag').innerText = "WAITING..."; document.getElementById('hl-text').innerText = "NEWSROOM SYSTEM ONLINE"; document.getElementById('hl-time').innerText = "-"; mainBox.querySelector('.btn-del').style.display = 'none'; }
+            const subContainer = document.getElementById('sub-news-list'); subContainer.innerHTML = ''; const subItems = newsLog.slice(1, 6); 
+            subItems.forEach((item, idx) => { const realIndex = idx + 1; const div = document.createElement('div'); div.className = 'sub-item'; div.style.borderLeftColor = item.color; const scale = 1 - (idx * 0.05); const opacity = 1 - (idx * 0.1); div.style.transform = `scale(${scale})`; div.style.opacity = opacity; div.innerHTML = `<span class="sub-cand" style="color:${item.color}">${item.cand}</span><span class="sub-head">${item.head}</span><button class="btn-del" onclick="delNews(${realIndex})">X</button>`; subContainer.appendChild(div); });
+            const arcContainer = document.getElementById('archive-list'); arcContainer.innerHTML = ''; const arcItems = newsLog.slice(6, 17);
+            arcItems.forEach((item, idx) => { const realIndex = idx + 6; const div = document.createElement('div'); div.className = 'arc-item'; div.title = item.head; div.innerHTML = `<span class="arc-cand" style="color:${item.color}">[${item.cand}]</span><span class="arc-txt">${item.head}</span><button class="btn-del" onclick="delNews(${realIndex})">X</button>`; arcContainer.appendChild(div); });
+            const gaugeContainer = document.getElementById('share-gauge-container'); const validNews = newsLog.filter(n => !n.isSystem);
+            if(validNews.length > 0) { let stats = {}; validNews.forEach(n => { if(!stats[n.cand]) stats[n.cand] = { count: 0, color: n.color }; stats[n.cand].count++; }); gaugeContainer.innerHTML = ''; for(let cand in stats) { let s = stats[cand]; let p = (s.count / validNews.length) * 100; let seg = document.createElement('div'); seg.className = 'gauge-segment'; seg.style.width = p + '%'; seg.style.backgroundColor = s.color; let shortName = cand.replace('후보자 ', ''); if(p > 5) { seg.innerHTML = `<span style="margin-right:8px; font-weight:900;">${shortName}</span> <span style="font-size:0.9em;">${Math.round(p)}%</span>`; } gaugeContainer.appendChild(seg); } } 
+            else { gaugeContainer.innerHTML = '<div style="width:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:0.9rem;">Waiting for data...</div>'; }
         }
-
-        function openArchive() {
-            document.getElementById('archive-modal').style.display = 'flex';
-            const grid = document.getElementById('archive-grid');
-            const bar = document.getElementById('share-bar');
-            grid.innerHTML = ''; bar.innerHTML = '';
-
-            const validNews = newsLog.filter(n => !n.isSystem);
-            if(validNews.length===0) {
-                bar.innerHTML = '<div style="width:100%;text-align:center;color:#666;">데이터 없음</div>';
-                return;
-            }
-            let stats = {};
-            validNews.forEach(i => { stats[i.color] = (stats[i.color]||0)+1; });
-            for(let [c, cnt] of Object.entries(stats)) {
-                let p = (cnt/validNews.length)*100;
-                let seg = document.createElement('div');
-                seg.className='share-segment'; seg.style.width=p+'%'; seg.style.backgroundColor=c;
-                if(p>10) seg.innerText=Math.round(p)+'%';
-                bar.appendChild(seg);
-            }
-            
-            newsLog.forEach((item, idx) => {
-                let c = document.createElement('div');
-                c.className='news-card'; c.style.borderTopColor=item.color;
-                c.innerHTML = `
-                    <div class="card-cand" style="color:${item.color}">${item.cand}</div>
-                    <div class="card-head">${item.head}</div>
-                    <button class="btn-del" style="top:10px; right:10px; opacity:1;" onclick="delNews(${idx})">X</button>
-                `;
-                c.style.position = 'relative';
-                grid.appendChild(c);
-            });
-        }
+        function openArchive() { document.getElementById('archive-modal').style.display = 'flex'; const grid = document.getElementById('archive-grid'); const bar = document.getElementById('share-bar'); grid.innerHTML = ''; bar.innerHTML = ''; const validNews = newsLog.filter(n => !n.isSystem); if(validNews.length===0) { bar.innerHTML = '<div style="width:100%;text-align:center;color:#666;">데이터 없음</div>'; return; } let stats = {}; validNews.forEach(i => { stats[i.color] = (stats[i.color]||0)+1; }); for(let [c, cnt] of Object.entries(stats)) { let p = (cnt/validNews.length)*100; let seg = document.createElement('div'); seg.className='share-segment'; seg.style.width=p+'%'; seg.style.backgroundColor=c; if(p>10) seg.innerText=Math.round(p)+'%'; bar.appendChild(seg); } newsLog.forEach((item, idx) => { let c = document.createElement('div'); c.className='news-card'; c.style.borderTopColor=item.color; c.innerHTML = `<div class="card-cand" style="color:${item.color}">${item.cand}</div><div class="card-head">${item.head}</div><button class="btn-del" style="top:10px; right:10px; opacity:1;" onclick="delNews(${idx})">X</button>`; c.style.position = 'relative'; grid.appendChild(c); }); }
         function closeArchive() { document.getElementById('archive-modal').style.display = 'none'; }
     </script>
-
-<script>
-    // 1. 키보드 단축키 차단 (F12, Ctrl+Shift+I, Ctrl+U 등)
-    document.addEventListener('keydown', function(event) {
-        if (event.keyCode === 123 || // F12
-           (event.ctrlKey && event.shiftKey && event.keyCode === 73) || // Ctrl+Shift+I
-           (event.ctrlKey && event.shiftKey && event.keyCode === 74) || // Ctrl+Shift+J
-           (event.ctrlKey && event.keyCode === 85)) { // Ctrl+U
-            event.preventDefault();
-            event.returnValue = false;
-        }
-    });
-
-    // 2. 개발자 도구 강제 정지 (무한 디버거 덫)
-    setInterval(function() {
-        var before = new Date().getTime();
-        debugger; 
-        var after = new Date().getTime();
-        if (after - before > 100) {
-            document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:50px;'>보안 정책에 의해 접근이 차단되었습니다.</h1>";
-        }
-    }, 1000);
-</script>
-
- <script>
-        // 1. 마우스 우클릭 방지 (contextmenu 이벤트 차단)
-        document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();
-        });
-
-        // 추가 팁: 드래그 및 복사도 방지하고 싶다면 아래 주석을 해제하세요.
-        /*
-        // 2. 텍스트 드래그 방지
-        document.addEventListener('selectstart', function(event) {
-            event.preventDefault();
-        });
-
-        // 3. 복사(Ctrl+C) 방지
-        document.addEventListener('copy', function(event) {
-            event.preventDefault();
-        });
-        */
-    </script>
-
-    
 </body>
 </html>
